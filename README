@@ -1,1 +1,9 @@
 This is a minimal BIOS bootloader that I've made for fun.
+
+Compiling & running instructions
+make ## Compile
+
+make run ## Run using qemu i386
+
+Output (floppy disk) -> build/floppy.img
+
