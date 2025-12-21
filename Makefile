@@ -1,14 +1,21 @@
 ASM = nasm
 ASMFLAGS = -f bin
 
-build/floppy.img: build/boot.o
-	cp $< $@
-	truncate -s 1440k $@
+.PHONY: all disk clean run
 
-build/boot.o: src/boot.asm
+disk: build/disk.img
+build/disk.img: build/boot.bin
+	@ chmod +x ./scripts/make_disk.sh
+	@ ./scripts/make_disk.sh
+
+build/boot.bin: src/boot.asm
 	@ mkdir -p build
 	$(ASM) $(ASMFLAGS) -o $@ $<
 
 run:
-	qemu-system-i386 -fda build/floppy.img
+	qemu-system-i386 -hda build/disk.img
+
+clean:
+	rm -rf build
+
 
