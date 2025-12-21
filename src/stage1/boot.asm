@@ -1,12 +1,13 @@
 org 0x7C00
 bits 16
 
-jmp short start
+jmp start
 nop
 
 ;; FAT BPB
 ;; ============ BPB bytes ===========
 ;;
+times 138-($-$$) db 0
 
 start:
 	;; Resetting cs by performing a jump
