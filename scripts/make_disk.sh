@@ -13,7 +13,8 @@ echo "Formatting"
 mkfs.fat -F 32 ../build/disk.img
 
 echo "Copying files"
-dd if=../build/boot.bin of=../build/disk.img conv=notrunc
+dd if=../build/stage1/boot.bin of=../build/disk.img conv=notrunc
+dd if=../build/stage2/stage2.bin of=../build/disk bs=512 seek=1
 
 echo "Finished"
 
