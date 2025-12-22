@@ -13,7 +13,7 @@ start:
 	;; Resetting cs by performing a jump
 	cli
 	cld
-	jmp 0x000:.reset_cs
+	jmp 0x0000:.reset_cs
 .reset_cs:
 	;; Reset segments & setup stack
 	xor ax, ax
@@ -46,7 +46,7 @@ start:
 	mov eax, 1
 	mov cl, 1
 	;; BIOS already set dl
-	mov bx, 0x1000
+	mov bx, 0x8000
 	call disk_read
 
 	; A test
@@ -76,7 +76,7 @@ disk_read:
 	mov [extension_dap.lba], eax
 	mov [extension_dap.segment], es
 	mov [extension_dap.offset], bx
-	mov [extension_dap.size], cl
+	mov [extension_dap.count], cl
 
 	mov ah, 0x42 ; Disk read
 	mov si, extension_dap
@@ -89,8 +89,8 @@ disk_read:
 .fail:
 	;; Disk read failed
 	;; TODO: Print message
-	hlt
 	cli
+	hlt
 
 .done:
 	;; Restore registers
