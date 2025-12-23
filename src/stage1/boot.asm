@@ -108,7 +108,7 @@ disk_read:
 
 ;; Extension data address packet structure
 extension_dap:
-	.size:    db 10
+	.size:    db 0x10
 		      db 0 ; Unused
 	.count:   dw 0
 	.offset:  dw 0
