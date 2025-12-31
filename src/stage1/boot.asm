@@ -24,6 +24,9 @@ start:
 	mov sp, 0x7C00 ; Stack grows downward
 	
 	sti
+
+	;; Save boot drive
+	mov [boot_drive], dl ;; BIOS should set dl to boot disk
 	
 	;; Check disk extension
 	mov ah, 0x41
@@ -42,17 +45,25 @@ start:
 	;; TODO: Print a message
 	jmp .halt
 .after:
-	; Test disk read
-	mov eax, 1
-	mov cl, 2
-	;; BIOS already set dl
-	mov bx, 0x8000
+	; Begin to load stage2
+	; mov eax, STAGE2_LOAD_LBA
+	mov eax, STAGE2_LOAD_LBA
+	mov cl, STAGE2_LOAD_COUNT
+	mov dl, [boot_drive]
+	
+	; mov ax, STAGE2_LOAD_SEGMENT
+	; mov es, ax
+	mov bx, STAGE2_LOAD_OFFSET
+
+	;; Perform disk read
 	call disk_read
 
-	; A test
 	mov al, 'h'
 	mov ah, 0x0E
 	int 0x10
+
+	;; Jump to stage2
+	jmp STAGE2_LOAD_SEGMENT:STAGE2_LOAD_OFFSET
 
 .halt:
 	cli
@@ -136,6 +147,13 @@ extension_dap:
 	.offset:  dw 0
 	.segment: dw 0
 	.lba:     dq 0
+
+STAGE2_LOAD_LBA		equ 1
+STAGE2_LOAD_COUNT	equ 32 ; 16 Kib
+STAGE2_LOAD_SEGMENT equ 0x0000
+STAGE2_LOAD_OFFSET  equ 0x8000
+
+boot_drive: db 0
 
 times 510 - ($ - $$) db 0
 dw 0xAA55 ;; BIOS magic
