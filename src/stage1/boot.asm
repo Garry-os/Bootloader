@@ -44,7 +44,7 @@ start:
 .after:
 	; Test disk read
 	mov eax, 1
-	mov cl, 1
+	mov cl, 2
 	;; BIOS already set dl
 	mov bx, 0x8000
 	call disk_read
@@ -80,17 +80,27 @@ disk_read:
 
 	mov ah, 0x42 ; Disk read
 	mov si, extension_dap
-.read:
-	pusha ; Save all registers
+	
+	;; Retry for 3 times
+	mov di, 3
+.retry:
+	pusha
 	stc
 	int 0x13
+
 	jnc .done ; Succeed
+
+	; Failed, retry
+	popa
+	call disk_reset
+
+	dec di
+	test di, di
+	jnz .retry
 
 .fail:
 	;; Disk read failed
-	;; TODO: Print message
-	cli
-	hlt
+	jmp disk_error
 
 .done:
 	;; Restore registers
@@ -105,6 +115,18 @@ disk_read:
 
 	ret
 
+disk_reset:
+	pusha
+	mov ah, 0 ; Disk reset interrupts
+	stc
+	int 0x13
+	jc disk_error
+	popa
+	ret
+
+disk_error:
+	cli
+	hlt
 
 ;; Extension data address packet structure
 extension_dap:
