@@ -5,5 +5,7 @@ make ## Compile
 
 make run ## Run using qemu i386
 
-Output (floppy disk) -> build/floppy.img
+NOTE: This bootloader doesn't support floppy disk
+
+Output (disk image): build/disk.img
 
