@@ -35,14 +35,36 @@ entry:
 	mov ss, ax
 
 	; Print
-	; mov eax, 'h'
-	; mov [0xB8000], eax
-	mov al, 'h'
-	out 0xE9, al
+	mov si, msg_hello
+	cld
+	call print
 
 .halt:
 	cli
 	hlt
+
+print:
+	[bits 32]
+	push esi
+	push eax
+	push edi
+
+	mov edi, TEXT_BUFFER
+.loop:
+	lodsb
+	or al, al
+	jz .done
+	
+	mov [edi], al
+	inc edi
+
+	inc edi
+	jmp .loop
+.done:
+	pop edi
+	pop eax
+	pop esi
+	ret
 
 Enable_A20:
 	[bits 16]
@@ -80,4 +102,8 @@ GDT:
 GDTDesc: 
 	dw GDTDesc - GDT - 1 ;; Limit (Size of GDT)
 	dd GDT ;; GDT base (address)
+
+msg_hello: db "Hello World!", 0
+
+TEXT_BUFFER equ 0xB8000
 
