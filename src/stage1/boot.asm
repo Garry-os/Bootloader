@@ -1,6 +1,8 @@
 org 0x7C00
 bits 16
 
+%define ENDL 0x0D, 0x0A
+
 jmp start
 nop
 
@@ -46,7 +48,9 @@ start:
 	jmp .halt
 .after:
 	; Begin to load stage2
-	; mov eax, STAGE2_LOAD_LBA
+	mov si, msg_load
+	call print
+
 	mov eax, STAGE2_LOAD_LBA
 	mov cl, STAGE2_LOAD_COUNT
 	mov dl, [boot_drive]
@@ -57,10 +61,6 @@ start:
 
 	;; Perform disk read
 	call disk_read
-
-	mov al, 'h'
-	mov ah, 0x0E
-	int 0x10
 
 	;; Jump to stage2
 	jmp STAGE2_LOAD_SEGMENT:STAGE2_LOAD_OFFSET
@@ -136,8 +136,31 @@ disk_reset:
 	ret
 
 disk_error:
+	mov si, msg_disk_error
+	call print
+
 	cli
 	hlt
+
+print:
+	push si
+	push ax
+	push bx
+.loop:
+	lodsb ;; Load next character in al
+	or al, al ; If next character == NULL?
+	jz .done
+
+	mov ah, 0x0E
+	mov bh, 0
+	int 0x10
+
+	jmp .loop
+.done:
+	pop bx
+	pop ax
+	pop si
+	ret
 
 ;; Extension data address packet structure
 extension_dap:
@@ -154,6 +177,9 @@ STAGE2_LOAD_SEGMENT equ 0x0000
 STAGE2_LOAD_OFFSET  equ 0x8000
 
 boot_drive: db 0
+
+msg_disk_error: db "Disk error!", ENDL, 0
+msg_load: db "Loading stage2", ENDL, 0
 
 times 510 - ($ - $$) db 0
 dw 0xAA55 ;; BIOS magic
