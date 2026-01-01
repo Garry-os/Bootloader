@@ -1,4 +1,3 @@
-org 0x8000
 bits 16
 
 entry:
