@@ -3,6 +3,9 @@ bits 16
 section .entry
 extern main
 
+extern __bss_start
+extern __end
+
 global entry
 entry:
 	cli ; Disable interrupts
@@ -37,10 +40,13 @@ entry:
 	mov ds, ax
 	mov ss, ax
 
-	; Print
-	mov si, msg_hello
+	;; Initialize BSS section
+	mov edi, __bss_start
+	mov ecx, __end
+	sub ecx, edi ; Get size
+	mov al, 0
 	cld
-	call print
+	repe stosb
 
 	;; Call main C function
 	call main
@@ -48,29 +54,6 @@ entry:
 .halt:
 	cli
 	hlt
-
-print:
-	[bits 32]
-	push esi
-	push eax
-	push edi
-
-	mov edi, TEXT_BUFFER
-.loop:
-	lodsb
-	or al, al
-	jz .done
-	
-	mov [edi], al
-	inc edi
-
-	inc edi
-	jmp .loop
-.done:
-	pop edi
-	pop eax
-	pop esi
-	ret
 
 Enable_A20:
 	[bits 16]
