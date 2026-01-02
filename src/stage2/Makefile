@@ -4,7 +4,7 @@ ASMFLAGS = -f elf32
 CC = i686-elf-gcc
 CFLAGS =  -Wall -Wextra -ffreestanding -fno-exceptions \
 		  -fno-stack-protector -fno-stack-check -fno-lto -fno-PIC -mno-red-zone \
-		  -mno-80387 -mno-sse2 -mno-sse
+		  -mno-80387 -mno-sse2 -mno-sse -I src/
 
 LD = i686-elf-gcc
 LDFLAGS = -nostdlib -T linker.ld 
