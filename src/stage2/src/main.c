@@ -1,12 +1,12 @@
 #include <stdint.h>
 #include <io.h>
+#include <console.h>
 
 void main()
 {
-	uint8_t* addr = (uint8_t*)0xB8000;
-	*addr = 'c';
+	clearScreen();
 
-	x86_outb(0xE9, 'c');
+	puts("Hello World from C!\n");
 
 	while (1);
 }
