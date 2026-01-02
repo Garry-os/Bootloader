@@ -1,6 +1,7 @@
 bits 16
 
 section .entry
+extern main
 
 global entry
 entry:
@@ -40,6 +41,9 @@ entry:
 	mov si, msg_hello
 	cld
 	call print
+
+	;; Call main C function
+	call main
 
 .halt:
 	cli
