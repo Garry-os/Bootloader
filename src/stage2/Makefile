@@ -1,7 +1,7 @@
 ASM = nasm
 ASMFLAGS = -f elf 
 
-LD = ld
+LD = x86_64-elf-ld
 LDFLAGS = -nostdlib -T linker.ld -melf_i386
 
 BUILD_DIR=../../build
