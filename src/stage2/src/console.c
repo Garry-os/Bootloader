@@ -22,6 +22,16 @@ void putColor(int x, int y, uint8_t color)
 	g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x) + 1] = color;
 }
 
+char getChar(int x, int y)
+{
+	return g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x)];
+}
+
+uint8_t getColor(int x, int y)
+{
+	return g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x) + 1];
+}
+
 void setCursor(int x, int y)
 {
 	int pos = y * SCREEN_WIDTH + x;
@@ -48,6 +58,29 @@ void clearScreen()
 	// Reset positions
 	g_PosX = 0;
 	g_PosY = 0;
+}
+
+void scroll(int lines)
+{
+	for (int y = lines; y < SCREEN_HEIGHT; y++)
+	{
+		for (int x = 0; x < SCREEN_WIDTH; x++)
+		{
+			putChar(x, y - lines, getChar(x, y));
+			putColor(x, y - lines, getColor(x, y));
+		}
+	}
+
+	for (int y = SCREEN_HEIGHT - lines; y < SCREEN_HEIGHT; y++)
+	{
+		for (int x = 0; x < SCREEN_WIDTH; x++)
+		{
+			putChar(x, y, ' ');
+			putColor(x, y, TEXT_COLOR);
+		}
+	}
+
+	g_PosY -= lines;
 }
 
 // Put a character to the screen
@@ -84,7 +117,7 @@ void putc(char c)
 
 	if (g_PosY >= SCREEN_HEIGHT)
 	{
-		clearScreen();
+		scroll(1);
 	}
 
 	setCursor(g_PosX, g_PosY);
