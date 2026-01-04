@@ -4,7 +4,7 @@ ASMFLAGS = -f elf32
 CC = i686-elf-gcc
 CFLAGS =  -Wall -Wextra -ffreestanding -fno-exceptions \
 		  -fno-stack-protector -fno-stack-check -fno-lto -fno-PIC -mno-red-zone \
-		  -mno-80387 -mno-sse2 -mno-sse -I src/ -I ../common/
+		  -mno-80387 -mno-sse2 -mno-sse -I src/ -I ../../common/
 
 LD = i686-elf-gcc
 LDFLAGS = -nostdlib -T linker.ld 
@@ -26,6 +26,6 @@ $(BUILD_DIR)/stage2/%._asm_o: src/%.asm
 $(BUILD_DIR)/stage2/%.o: src/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(BUILD_DIR)/stage2/printf.o: ../common/printf.c
+$(BUILD_DIR)/stage2/printf.o: ../../common/printf.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 

@@ -10,11 +10,11 @@ build/disk.img: stage1 stage2
 
 stage1: always
 	@ mkdir -p build/stage1
-	@ $(MAKE) -C src/stage1
+	@ $(MAKE) -C bootloader/stage1
 
 stage2: always
 	@ mkdir -p build/stage2
-	@ $(MAKE) -C src/stage2
+	@ $(MAKE) -C bootloader/stage2
 
 always:
 	@ mkdir -p build
