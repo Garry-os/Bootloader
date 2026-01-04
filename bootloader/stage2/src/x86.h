@@ -4,3 +4,5 @@
 
 void ASMCALL x86_Test();
 
+bool x86_DiskReset(uint8_t drive);
+

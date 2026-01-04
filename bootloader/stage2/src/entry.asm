@@ -10,6 +10,9 @@ global entry
 entry:
 	cli ; Disable interrupts
 
+	; Save boot drive
+	mov [boot_drive], dl
+
 	;; Setup segment registers
 	mov ax, 0
 	mov ds, ax
@@ -49,6 +52,11 @@ entry:
 	repe stosb
 
 	;; Call main C function
+	;; Pass in boot drive
+	xor edx, edx
+	mov dl, [boot_drive]
+	push edx
+
 	call main
 
 .halt:
@@ -111,4 +119,5 @@ GDTDesc:
 msg_hello: db "Hello World!", 0
 
 TEXT_BUFFER equ 0xB8000
+boot_drive: db 0
 
