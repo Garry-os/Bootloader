@@ -18,14 +18,18 @@ C_SOURCES := $(shell find src -name "*.c")
 C_OBJECTS := $(patsubst src/%.c, $(BUILD_DIR)/stage2/%.o, $(C_SOURCES))
 
 $(BUILD_DIR)/stage2/stage2.bin: $(ASM_OBJECTS) $(C_OBJECTS) $(BUILD_DIR)/stage2/printf.o
-	$(LD) $(LDFLAGS) -o $@ $^ -lgcc
+	@ echo "LD" $@
+	@ $(LD) $(LDFLAGS) -o $@ $^ -lgcc
 
 $(BUILD_DIR)/stage2/%._asm_o: src/%.asm
-	$(ASM) $(ASMFLAGS) -o $@ $<
+	@ echo "AS" $<
+	@ $(ASM) $(ASMFLAGS) -o $@ $<
 
 $(BUILD_DIR)/stage2/%.o: src/%.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+	@ echo "CC" $<
+	@ $(CC) $(CFLAGS) -c -o $@ $<
 
 $(BUILD_DIR)/stage2/printf.o: ../../common/printf.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+	@ echo "CC" $<
+	@ $(CC) $(CFLAGS) -c -o $@ $<
 
