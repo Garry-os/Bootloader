@@ -88,6 +88,22 @@ GDT:
 	db 11001111b
 	db 0
 
+	;; 16 bit code segment
+	dw 0xFFFF
+	dw 0
+	db 0
+	db 10011010b
+	db 00001111b
+	db 0
+
+	;; 16 bit data segment
+	dw 0xFFFF
+	dw 0
+	db 0
+	db 10010010b
+	db 00001111b
+	db 0
+
 GDTDesc: 
 	dw GDTDesc - GDT - 1 ;; Limit (Size of GDT)
 	dd GDT ;; GDT base (address)
