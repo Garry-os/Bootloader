@@ -90,8 +90,8 @@ x86_Test:
 global x86_DiskReset
 x86_DiskReset:
 	[bits 32]
-	mov ebp, esp
 	push ebp
+	mov ebp, esp
 
 	EnterRealMode
 	[bits 16]
@@ -120,8 +120,8 @@ global x86_DiskRead
 x86_DiskRead:
 	[bits 32]
 	
-	mov ebp, esp
 	push ebp
+	mov ebp, esp
 
 	EnterRealMode
 	[bits 16]
@@ -142,7 +142,7 @@ x86_DiskRead:
 	mov [extension_dap.offset], bx
 	mov [extension_dap.count], cl
 
-	mov si, [extension_dap]
+	mov si, extension_dap
 
 	;; Read disk
 	mov ah, 0x42 ; Enchanced disk reading
