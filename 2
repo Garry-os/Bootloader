@@ -84,35 +84,6 @@ x86_Test:
 	pop ebp
 	ret
 
-;; Disk reset operation
-;; Arguments: Drive
-;; Return: 1 if succeed, otherwise, 0
-global x86_DiskReset
-x86_DiskReset:
-	[bits 32]
-	mov ebp, esp
-	push ebp
-
-	EnterRealMode
-	[bits 16]
-
-	mov ah, 0 ; Disk reset
-	mov dl, [bp + 8] ; Boot drive
-	stc
-	int 0x13
-
-	mov eax, 1
-	sbb eax, 0
-
-	push eax
-	EnterProtectedMode
-	[bits 32]
-	pop eax
-
-	mov esp, ebp
-	pop ebp
-	ret
-
 ;; Disk reading operation
 ;; Arguments: Drive, LBA, sector count, data output address
 ;; Return: 1 if succeed, otherwise, 0
@@ -142,10 +113,8 @@ x86_DiskRead:
 	mov [extension_dap.offset], bx
 	mov [extension_dap.count], cl
 
-	mov si, [extension_dap]
-
 	;; Read disk
-	mov ah, 0x42 ; Enchanced disk reading
+	mov ah, 0x42
 	stc
 	int 0x13
 
