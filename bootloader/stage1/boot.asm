@@ -44,7 +44,9 @@ start:
 	
 	jmp .after
 .no_disk_extension:
-	;; TODO: Print a message
+	mov si, msg_no_disk_ext
+	call print
+
 	jmp .halt
 .after:
 	; Begin to load stage2
@@ -180,6 +182,7 @@ boot_drive: db 0
 
 msg_disk_error: db "Disk error!", ENDL, 0
 msg_load: db "Loading stage2", ENDL, 0
+msg_no_disk_ext: db "No disk extension supported!", ENDL, 0
 
 times 510 - ($ - $$) db 0
 dw 0xAA55 ;; BIOS magic
