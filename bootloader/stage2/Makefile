@@ -17,6 +17,8 @@ ASM_OBJECTS := $(patsubst src/%.asm, $(BUILD_DIR)/stage2/%._asm_o, $(ASM_SOURCES
 C_SOURCES := $(shell find src -name "*.c")
 C_OBJECTS := $(patsubst src/%.c, $(BUILD_DIR)/stage2/%.o, $(C_SOURCES))
 
+C_HEADERS := $(shell find src -name "*.h")
+
 $(BUILD_DIR)/stage2/stage2.bin: $(ASM_OBJECTS) $(C_OBJECTS) $(BUILD_DIR)/stage2/printf.o
 	@ echo "LD" $@
 	@ $(LD) $(LDFLAGS) -o $@ $^ -lgcc
@@ -25,7 +27,7 @@ $(BUILD_DIR)/stage2/%._asm_o: src/%.asm
 	@ echo "AS" $<
 	@ $(ASM) $(ASMFLAGS) -o $@ $<
 
-$(BUILD_DIR)/stage2/%.o: src/%.c
+$(BUILD_DIR)/stage2/%.o: src/%.c $(C_HEADERS)
 	@ echo "CC" $<
 	@ $(CC) $(CFLAGS) -c -o $@ $<
 
