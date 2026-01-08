@@ -4,6 +4,8 @@
 typedef struct
 {
 	uint8_t driveID;
+	uint32_t partitionOffset;
+	uint32_t partitionSize;
 } DISK;
 
 bool DiskInit(DISK* disk, uint8_t drive);
