@@ -24,10 +24,12 @@ $(BUILD_DIR)/stage2/stage2.bin: $(ASM_OBJECTS) $(C_OBJECTS) $(BUILD_DIR)/stage2/
 	@ $(LD) $(LDFLAGS) -o $@ $^ -lgcc
 
 $(BUILD_DIR)/stage2/%._asm_o: src/%.asm
+	@ mkdir -p $(dir $@)
 	@ echo "AS" $<
 	@ $(ASM) $(ASMFLAGS) -o $@ $<
 
 $(BUILD_DIR)/stage2/%.o: src/%.c $(C_HEADERS)
+	@ mkdir -p $(dir $@)
 	@ echo "CC" $<
 	@ $(CC) $(CFLAGS) -c -o $@ $<
 

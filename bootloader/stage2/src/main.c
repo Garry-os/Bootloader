@@ -3,6 +3,12 @@
 #include <console.h>
 #include <printf.h>
 #include <disk.h>
+#include <fat32.h>
+
+void hang()
+{
+	while (1);
+}
 
 void main(uint8_t bootDrive)
 {
@@ -13,22 +19,18 @@ void main(uint8_t bootDrive)
 
 	printf("Boot drive: 0x%x\n", bootDrive);
 
+	// Initialize disk
 	DISK disk;
 	DiskInit(&disk, bootDrive);
 
-	uint8_t buffer[1024];
-
-	// Read disk test
-	if (!DiskRead(&disk, 0, 2, buffer))
+	// Initialize FAT32
+	if (!FAT32_Init(&disk))
 	{
-		printf("Failed to read disk!");
+		hang();
 	}
 
-	// Verify
-	for (int i = 0; i < 3; i++)
-	{
-		printf("0x%x ", buffer[i]);
-	}
+	FAT32_DirectoryEntry entry;
+	FAT32_Traverse(&disk, "hellof.txt", &entry);
 
-	while (1);
+	hang();
 }

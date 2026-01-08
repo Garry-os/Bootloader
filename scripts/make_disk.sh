@@ -18,10 +18,12 @@ else
 fi
 
 echo "Copying files"
+mcopy -i ../build/disk.img ../hello.txt ::/hello.txt
 dd if=../build/stage1/boot.bin of=../build/disk.img bs=1 seek=0 count=3 conv=notrunc
 dd if=../build/stage1/boot.bin of=../build/disk.img bs=1 seek=138 skip=138 conv=notrunc
 
 dd if=../build/stage2/stage2.bin of=../build/disk.img bs=512 seek=1 conv=notrunc
+
 
 echo "Finished"
 

@@ -1,4 +1,5 @@
 #include "string.h"
+#include <stddef.h>
 
 const char* strchr(const char* str, char c)
 {
