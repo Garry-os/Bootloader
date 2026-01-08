@@ -9,7 +9,7 @@ nop
 ;; FAT BPB
 ;; ============ BPB bytes ===========
 ;;
-times 138-($-$$) db 0
+times 90-($-$$) db 0
 
 start:
 	;; Resetting cs by performing a jump
@@ -173,7 +173,7 @@ extension_dap:
 	.segment: dw 0
 	.lba:     dq 0
 
-STAGE2_LOAD_LBA		equ 1
+STAGE2_LOAD_LBA		equ (1 + 2048)
 STAGE2_LOAD_COUNT	equ 32 ; 16 Kib
 STAGE2_LOAD_SEGMENT equ 0x0000
 STAGE2_LOAD_OFFSET  equ 0x8000
