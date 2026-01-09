@@ -5,6 +5,8 @@
 bool DiskInit(DISK* disk, uint8_t drive)
 {
 	disk->driveID = drive;
+	disk->partitionOffset = 0;
+	disk->partitionSize = 0;
 
 	// Detect MBR partition
 	uint8_t buffer[512]; // Read the MBR table

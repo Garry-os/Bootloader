@@ -30,7 +30,7 @@ void main(uint8_t bootDrive)
 	}
 
 	FAT32_DirectoryEntry entry;
-	FAT32_Traverse(&disk, "hellof.txt", &entry);
+	FAT32_Traverse(&disk, "hello.txt", &entry);
 
 	hang();
 }

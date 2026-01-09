@@ -32,11 +32,6 @@ typedef struct
 	uint16_t FSInfoSector;
 	uint16_t BackupBootSector;
 	uint8_t Reserved[12];
-	uint8_t DriveNumber;
-	uint8_t Signature; // Must be 0x28 or 0x29
-	uint32_t SerialNumber;
-	uint8_t VolumeLabel[11];
-	uint8_t SystemIdentifier[8];
 } __attribute__((packed)) FAT32_EBR;
 
 typedef struct
@@ -57,11 +52,8 @@ typedef struct
 	uint32_t LargeSectorsCount;
 
 	// EBR
-	union
-	{
-		FAT_EBR EBR;
-		FAT32_EBR EBR32;
-	};
+	FAT32_EBR EBR32;
+	FAT_EBR EBR;
 
 	// Boot code
 	
@@ -103,10 +95,14 @@ bool FAT32_Init(DISK* disk)
 
 	// Calculate where the File allocation table & cluster start
 	g_FATData->FatStartLBA = g_FATData->BS.BPB.ReservedSectors;
-	g_FATData->ClusterStartLBA = g_FATData->FatStartLBA + g_FATData->BS.BPB.SectorsPerFat * g_FATData->BS.BPB.FatCount;	
+	g_FATData->ClusterStartLBA = g_FATData->BS.BPB.ReservedSectors + (g_FATData->BS.BPB.EBR32.SectorsPerFat * g_FATData->BS.BPB.FatCount);	
 	printf("FatStartLBA: 0x%x\n", g_FATData->FatStartLBA);
 	printf("ClusterStartLBA: 0x%x\n", g_FATData->ClusterStartLBA);
 	printf("Sector size: %d\n", g_FATData->BS.BPB.BytesPerSector);
+
+	printf("Reserved sectors: 0x%x", g_FATData->BS.BPB.ReservedSectors);
+	printf("FatCount: 0x%x\n", g_FATData->BS.BPB.FatCount);
+	printf("SectorsPerFAT: 0x%x\n", g_FATData->BS.BPB.EBR32.SectorsPerFat);
 
 	return true;
 }
@@ -119,7 +115,7 @@ uint32_t FAT32_NextCluster(DISK* disk, uint32_t cluster)
 
 	if (!DiskRead(disk, lba, 1, buffer))
 	{
-		printf("[FAT32] Failed to read!\n");
+		printf("[FAT32] Failed to read next cluster!\n");
 		return 0xFFFFFFFF;
 	}
 
@@ -182,15 +178,15 @@ bool FAT32_FindEntry(DISK* disk, uint32_t startCluster, const char* fileName, FA
 				if (entries[j].Name[0] == 0x00)
 				{
 					// No more files/directories
-					continue;
+					break;
 				}
 				if (entries[j].Name[0] == 0xE5)
 				{
 					// Entry is unused
 					continue;
 				}
-				if (entries[j].Attributes == FAT_ATTRIBUTE_LFN || 
-						entries[j].Attributes == FAT_ATTRIBUTE_VOLUME_ID)
+				if ((entries[j].Attributes & FAT_ATTRIBUTE_LFN) == FAT_ATTRIBUTE_LFN || 
+						entries[j].Attributes & FAT_ATTRIBUTE_VOLUME_ID)
 				{
 					// Skip LFN and volume label
 					continue;
@@ -202,6 +198,10 @@ bool FAT32_FindEntry(DISK* disk, uint32_t startCluster, const char* fileName, FA
 						dirEntry->Attributes == FAT_ATTRIBUTE_ARCHIVE)
 				{
 					FAT32_NameToShort(fileName, shortName);
+					for (int i = 0; i < 11; i++)
+					{
+						printf("Name: %c\n", shortName[i]);
+					}
 
 					// Compare
 					if (memcmp(shortName, dirEntry->Name, 11) == 0)
