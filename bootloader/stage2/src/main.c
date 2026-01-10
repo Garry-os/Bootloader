@@ -5,6 +5,8 @@
 #include <disk.h>
 #include <fat32.h>
 
+#define FILE_BUFFER (uint8_t*)(0x7E00)
+
 void hang()
 {
 	while (1);
@@ -31,6 +33,16 @@ void main(uint8_t bootDrive)
 
 	FAT32_DirectoryEntry entry;
 	FAT32_Traverse(&disk, "hello.txt", &entry);
+
+	// Read file
+	uint8_t* bufferPtr = FILE_BUFFER;
+	FAT32_ReadFile(&disk, &entry, bufferPtr);
+
+	for (int i = 0; i < entry.FileSize; i++)
+	{
+		printf("%c", bufferPtr[i]);
+	}
+
 
 	hang();
 }

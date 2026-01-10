@@ -11,6 +11,7 @@
 #include <utils/ctype.h>
 
 #define FAT32_NO_MORE_CLUSTER 0x0FFFFFF8
+#define FAT32_BUFFER 0x1000
 
 // FAT 12/16 EBR
 typedef struct
@@ -236,5 +237,34 @@ bool FAT32_Traverse(DISK* disk, const char* fileName, FAT32_DirectoryEntry* entr
 	return true;
 }
 
+bool FAT32_ReadFile(DISK* disk, FAT32_DirectoryEntry* entry, uint8_t* buffer)
+{
+	uint32_t cluster = (entry->FirstClusterHigh << 16) | entry->FirstClusterLow;
+	uint32_t remaining = entry->FileSize;
+	uint8_t* tmpBufferPtr = (uint8_t*)FAT32_BUFFER;
+
+	while (cluster < 0x0FFFFFF8 && remaining > 0)
+	{
+		uint32_t lba = FAT32_ClusterToLba(cluster);
+
+		for (uint8_t i = 0; i < g_FATData->BS.BPB.SectorsPerCluster && remaining > 0; i++)
+		{
+			if (!DiskRead(disk, lba + i, 1, tmpBufferPtr))
+			{
+				printf("[FAT32] Failed to read disk!\n");
+				return false;
+			}
+			uint32_t toCopy = remaining < 512 ? remaining : 512;
+
+			memcpy(buffer, tmpBufferPtr, toCopy);
+			buffer += toCopy;
+			remaining -= toCopy;
+		}
+
+		cluster = FAT32_NextCluster(disk, cluster);
+	}
+
+	return true;
+}
 
 

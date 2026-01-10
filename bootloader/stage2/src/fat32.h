@@ -36,4 +36,5 @@ enum FAT_Attributes
 
 bool FAT32_Init(DISK* disk);
 bool FAT32_Traverse(DISK* disk, const char* fileName, FAT32_DirectoryEntry* entryOut);
+bool FAT32_ReadFile(DISK* disk, FAT32_DirectoryEntry* entry, uint8_t* buffer);
 
