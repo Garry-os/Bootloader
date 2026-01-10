@@ -25,7 +25,7 @@ always:
 	@ mkdir -p build
 
 run:
-	qemu-system-i386 -hda build/disk.img -debugcon stdio
+	qemu-system-x86_64 -hda build/disk.img -debugcon stdio
 
 clean:
 	rm -rf build
