@@ -11,7 +11,6 @@
 #include <utils/ctype.h>
 
 #define FAT32_NO_MORE_CLUSTER 0x0FFFFFF8
-#define FAT32_BUFFER 0x1000
 
 // FAT 12/16 EBR
 typedef struct
@@ -241,7 +240,7 @@ bool FAT32_ReadFile(DISK* disk, FAT32_DirectoryEntry* entry, uint8_t* buffer)
 {
 	uint32_t cluster = (entry->FirstClusterHigh << 16) | entry->FirstClusterLow;
 	uint32_t remaining = entry->FileSize;
-	uint8_t* tmpBufferPtr = (uint8_t*)FAT32_BUFFER;
+	uint8_t tmpBufferPtr[512];
 
 	while (cluster < 0x0FFFFFF8 && remaining > 0)
 	{
