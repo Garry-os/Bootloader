@@ -96,13 +96,6 @@ bool FAT32_Init(DISK* disk)
 	// Calculate where the File allocation table & cluster start
 	g_FATData->FatStartLBA = g_FATData->BS.BPB.ReservedSectors;
 	g_FATData->ClusterStartLBA = g_FATData->BS.BPB.ReservedSectors + (g_FATData->BS.BPB.EBR32.SectorsPerFat * g_FATData->BS.BPB.FatCount);	
-	printf("FatStartLBA: 0x%x\n", g_FATData->FatStartLBA);
-	printf("ClusterStartLBA: 0x%x\n", g_FATData->ClusterStartLBA);
-	printf("Sector size: %d\n", g_FATData->BS.BPB.BytesPerSector);
-
-	printf("Reserved sectors: 0x%x", g_FATData->BS.BPB.ReservedSectors);
-	printf("FatCount: 0x%x\n", g_FATData->BS.BPB.FatCount);
-	printf("SectorsPerFAT: 0x%x\n", g_FATData->BS.BPB.EBR32.SectorsPerFat);
 
 	return true;
 }
@@ -198,10 +191,6 @@ bool FAT32_FindEntry(DISK* disk, uint32_t startCluster, const char* fileName, FA
 						dirEntry->Attributes == FAT_ATTRIBUTE_ARCHIVE)
 				{
 					FAT32_NameToShort(fileName, shortName);
-					for (int i = 0; i < 11; i++)
-					{
-						printf("Name: %c\n", shortName[i]);
-					}
 
 					// Compare
 					if (memcmp(shortName, dirEntry->Name, 11) == 0)
