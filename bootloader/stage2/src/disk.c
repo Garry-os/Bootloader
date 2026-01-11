@@ -3,7 +3,7 @@
 #include <mbr.h>
 #include <utils/memory.h>
 
-#define DISK_BUFFER ((void*)0x1000)
+#define DISK_BUFFER ((void*)0x8000)
 
 bool DiskInit(DISK* disk, uint8_t drive)
 {
