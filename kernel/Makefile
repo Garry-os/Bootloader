@@ -8,6 +8,8 @@ CC = x86_64-elf-gcc
 CFLAGS = -Wall -Wextra -ffreestanding -fno-stack-protector \
 		 -fno-stack-check -mno-80387 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone
 
+CFLAGS += -I src/ -I src/graphical
+
 BUILD_DIR = ../build
 
 ASM_SOURCES := $(shell find src -name "*.asm")
