@@ -1,5 +1,9 @@
 bits 64
 
+section .text
+
+extern main
+
 global long_mode_start
 long_mode_start:
 	; Setup data registers
@@ -10,8 +14,9 @@ long_mode_start:
 	mov gs, ax
 	mov ss, ax
 
-	;; Print something
-	mov byte [0xb8000], 'A'
+	;; Call the main C function
+	call main
+
 .halt:
 	cli
 	hlt
