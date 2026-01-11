@@ -4,6 +4,7 @@
 
 #include "console.h"
 #include <stdint.h>
+#include <x86_64/system.h>
 
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 25
@@ -40,13 +41,45 @@ void clearScreen()
 		for (int x = 0; x < SCREEN_WIDTH; x++)
 		{
 			putChar(x, y, ' ');
-			putColor(x, y, DEFAULT_COLOR);
 		}
 	}
 	
 	// Reset positions
 	g_PosX = 0;
 	g_PosY = 0;
+}
+
+void scroll(int lines)
+{
+	for (int y = lines; y < SCREEN_HEIGHT; y++)
+	{
+		for (int x = 0; x < SCREEN_WIDTH; x++)
+		{
+			putChar(x, y - lines, getChar(x, y));
+			putColor(x, y - lines, getColor(x, y));
+		}
+	}
+
+	for (int y = SCREEN_HEIGHT - lines; y < SCREEN_HEIGHT; y++)
+	{
+		for (int x = 0; x < SCREEN_WIDTH; x++)
+		{
+			putChar(x, y, ' ');
+			putColor(x, y, DEFAULT_COLOR);
+		}
+	}
+
+	g_PosY -= lines;
+}
+
+void setCursorPos(int x, int y)
+{
+	int pos = y * SCREEN_WIDTH + x;
+
+	x86_outb(0x3D4, 0x0F);
+    x86_outb(0x3D5, (uint8_t)(pos & 0xFF)); // Send lower byte
+    x86_outb(0x3D4, 0x0E);
+    x86_outb(0x3D5, (uint8_t)((pos >> 8) & 0xFF)); // Send higher byte
 }
 
 void putc(char c)
@@ -80,8 +113,10 @@ void putc(char c)
 
 	if (g_PosY >= SCREEN_HEIGHT)
 	{
-		clearScreen();
+		scroll(1);
 	}
+	
+	setCursorPos(g_PosX, g_PosY);
 }
 
 void puts(const char* str)
