@@ -4,12 +4,12 @@ extern long_mode_start
 CPUID_EXTENSIONS equ 0x80000000
 CPUID_EXT_FEATURES equ 0x80000001
 
-section .text
+section .entry
 
 global entry
 entry:
 	cli
-	
+
 	mov esp, stack_top ;; Load a new stack
 
 	;; Do the checks
@@ -154,6 +154,7 @@ GDT:
 		db 0
 		db PRESENT | NOT_SYS | RW
 		db GRAN_4K | SZ_32 | 0xF
+		db 0
 	.Ptr:
 		dw $ - GDT - 1 ; Limit
 		dq GDT ; Base
