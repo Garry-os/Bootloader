@@ -128,3 +128,9 @@ void puts(const char* str)
 	}
 }
 
+// For printf.h
+void printf_putc(char c)
+{
+	putc(c);
+}
+

@@ -6,8 +6,7 @@ void main()
 {
 	clearScreen();
 
-	x86_outb(0xE9, 'h');
-	puts("Hello world from kernel!\n");
+	printf("Hello World 0x%x\n", 0x123);
 
 	while (1);
 }

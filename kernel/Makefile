@@ -19,7 +19,7 @@ ASM_OBJECTS := $(patsubst src/%.asm, $(BUILD_DIR)/kernel/%._asm_o, $(ASM_SOURCES
 C_SOURCES := $(shell find src -name "*.c")
 C_OBJECTS := $(patsubst src/%.c, $(BUILD_DIR)/kernel/%.o, $(C_SOURCES))
 
-$(BUILD_DIR)/kernel/kernel.bin: $(ASM_OBJECTS) $(C_OBJECTS)
+$(BUILD_DIR)/kernel/kernel.bin: $(ASM_OBJECTS) $(C_OBJECTS) $(BUILD_DIR)/kernel/printf.o
 	@ echo "LD" $@
 	@ $(LD) $(LDFLAGS) -o $@ $^ -lgcc
 
@@ -30,6 +30,10 @@ $(BUILD_DIR)/kernel/%._asm_o: src/%.asm
 
 $(BUILD_DIR)/kernel/%.o: src/%.c
 	@ mkdir -p $(dir $@)
+	@ echo "CC" $<
+	@ $(CC) $(CFLAGS) -c -o $@ $<
+
+$(BUILD_DIR)/kernel/printf.o: ../common/printf.c ../common/printf.h
 	@ echo "CC" $<
 	@ $(CC) $(CFLAGS) -c -o $@ $<
 
