@@ -9,7 +9,7 @@ CFLAGS = -Wall -Wextra -ffreestanding -fno-stack-protector \
 		 -fno-stack-check -mno-80387 -mno-mmx -mno-sse -mno-sse2 -mno-red-zone
 
 ## Includes files
-CFLAGS += -I src/ -I src/graphical -I src/arch -I ../common
+CFLAGS += -I src/ -I src/graphical -I src/arch -I ../common -I src/entry
 
 BUILD_DIR = ../build
 
