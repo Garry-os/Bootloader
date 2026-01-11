@@ -1,11 +1,11 @@
-This is a minimal BIOS bootloader that I've made for fun.
+This is a small x86_64 OS that I've made for fun.
+It is integrated with a BIOS bootloader and a kernel.
+UEFI booting isn't supported.
 
 Compiling & running instructions
 make ## Compile
 
-make run ## Run using qemu i386
-
-NOTE: This bootloader doesn't support floppy disk
+make run ## Run using qemu
 
 Output (disk image): build/disk.img
 
