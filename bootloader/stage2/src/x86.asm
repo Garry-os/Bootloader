@@ -57,33 +57,6 @@ section .text
     and %3, 0xf
 %endmacro
 
-global x86_Test
-x86_Test:
-	[bits 32]
-	
-	push ebp
-	mov ebp, esp
-	
-	EnterRealMode
-	[bits 16]
-	
-	push ax
-
-	; Test 0x10 interrupts
-	mov ah, 0x0E
-	mov al, 'i'
-	stc
-	int 0x10
-
-	pop ax
-
-	EnterProtectedMode
-	[bits 32]
-
-	mov esp, ebp
-	pop ebp
-	ret
-
 ;; Disk reset operation
 ;; Arguments: Drive
 ;; Return: 1 if succeed, otherwise, 0
