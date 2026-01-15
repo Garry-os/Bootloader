@@ -5,7 +5,7 @@
 #pragma once
 #include <stdint.h>
 
-#define BOOTINFO_ADDRESS ((void*)0x5000)
+#define BOOTINFO_ADDRESS ((void*)0x10000)
 
 
 // The structure that the bootloader
